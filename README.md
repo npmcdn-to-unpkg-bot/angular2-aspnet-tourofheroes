@@ -15,6 +15,7 @@ If you haven't got an existing [Node.js](https://nodejs.org/en/download/) instal
 Fork or clone this repo or simply [download and extract the source](https://github.com/goblincoding/angular2-aspnet-tourofheroes/archive/master.zip).
 
 At the command line (inside the root directory where your package.json file lives):
+
 1. Run `npm install`
 2. Run `dnu restore` (for the .NET dependencies)
 3. Open the "angular2-aspnet-tourofheroes" folder in VS Code.
