@@ -28,8 +28,10 @@ Only the bare minimum is currently available in terms of gulp tasks, but worth n
 If you wish to use Visual Studio, simply open the project.json file with your VS version and launch as you would usually.
 
 ### Roadmap
-This repository is currently set up with the bare minimum to run the tutorial.  The intent is to expand this tutorial with tests, watch tasks, browser syncing, linting, etc (pull requests are always
-welcome).
+This repository is currently set up with the bare minimum to run the tutorial.  The intent is to expand this tutorial with tests, watch tasks, browser syncing, linting, etc.
+
+### Help Welcome
+I am still learning Angular 2 and ASP.NET Core, so help, guidance, advice and pull requests are always welcome!
 
 #### References
 [This blog post of David Pine](https://ievangelistblog.wordpress.com/2016/01/13/building-an-angular2-spa-with-asp-net-5-mvc-6-web-api-2-and-typescript-1-7-5/) contributed greatly to my understanding
