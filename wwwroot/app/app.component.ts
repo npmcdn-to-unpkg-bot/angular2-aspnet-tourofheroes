@@ -21,8 +21,8 @@ import { HeroService } from './components/heroes/hero.service';
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardComponent,
-    useAsDefault: true    
-  },  
+    useAsDefault: true
+  },
   {
     path: '/detail/:id',
     name: 'HeroDetail',

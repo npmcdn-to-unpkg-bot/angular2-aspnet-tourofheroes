@@ -6,5 +6,5 @@ import 'rxjs/Rx';
 import {AppComponent} from './app.component';
 
 bootstrap(AppComponent, [ROUTER_PROVIDERS, HTTP_PROVIDERS])
-    .then(success => console.log(`Bootstrap success`))
-    .catch(error => console.log(error));
+  .then(success => console.log(`Bootstrap success`))
+  .catch(error => console.log(error));
