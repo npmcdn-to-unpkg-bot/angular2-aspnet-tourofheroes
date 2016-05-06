@@ -10,6 +10,8 @@ var inlineNg2Template = require('gulp-inline-ng2-template');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require("gulp-uglify");
 var tslint = require('gulp-tslint');
+var runSequence = require('run-sequence');
+var Server = require('karma').Server;
 
 // -----------------------------------------------------------------
 // Config
@@ -35,17 +37,41 @@ var config = {
 };
 
 // -----------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------
+// Copy 3-rd party libs
+gulp.task('copy:lib', function () {
+  return gulp.src(config.lib, { base: config.libBase })
+    .pipe(gulp.dest(webroot + 'lib'));
+});
+
+// Delete libs and generated .js
+gulp.task('clean', function () {
+  return del([webroot + 'lib',
+    webroot + '**/*.js.map',
+    webroot + '**/*.js'
+  ]);
+});
+
+// Lint for style
+gulp.task('tslint', function () {
+  return gulp.src(config.ts)
+    .pipe(tslint())
+    .pipe(tslint.report('verbose'));
+})
+
+// -----------------------------------------------------------------
 // Compile
 // -----------------------------------------------------------------
 var tsProject = typescript.createProject('./tsconfig.json');
 
-var getMergedTsSourceEventStream = function() {
+var getMergedTsSourceEventStream = function () {
   var tsSrcInlined = gulp.src([config.ts], { base: webroot })
     .pipe(inlineNg2Template({ base: webroot }));
   return eventStream.merge(tsSrcInlined, gulp.src('./typings/main.d.ts'));
 }
 
-gulp.task('compile:prod', ['clean'], function() {
+gulp.task('compile:prod', function () {
   var tsMerged = getMergedTsSourceEventStream();
   return tsMerged
     .pipe(sourcemaps.init())
@@ -55,7 +81,7 @@ gulp.task('compile:prod', ['clean'], function() {
     .pipe(gulp.dest(webroot));
 });
 
-gulp.task('compile:dev', ['clean'], function() {
+gulp.task('compile:dev', function () {
   var tsMerged = getMergedTsSourceEventStream();
   return tsMerged
     .pipe(sourcemaps.init())
@@ -64,32 +90,53 @@ gulp.task('compile:dev', ['clean'], function() {
     .pipe(gulp.dest(webroot));
 });
 
+
 // -----------------------------------------------------------------
-// Helpers
+// Test tasks
 // -----------------------------------------------------------------
-// Copy 3-rd party libs
-gulp.task('copy:lib', function() {
-  return gulp.src(config.lib, { base: config.libBase })
-    .pipe(gulp.dest(webroot + 'lib'));
+// Run once and exit
+gulp.task('karma:once', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }).start(done);
 });
 
-// Delete libs and generated .js
-gulp.task('clean', function() {
-  return del([webroot + 'lib',
-    webroot + '**/*.js'
-  ]);
+// Watch for file changes and re-run tests on each change
+gulp.task('karma:watch', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js'
+  }).start(done);
 });
 
-// Lint for style
-gulp.task('tslint', function() {
-  return gulp.src(config.ts)
-    .pipe(tslint())
-    .pipe(tslint.report('verbose'));
-})
+gulp.task('test', function (done) {
+  runSequence('build.dev',
+    'karma:once',
+    done);
+});
+
+gulp.task('test.watch', function (done) {
+  runSequence('build.dev',
+    'karma:watch',
+    done);
+});
 
 // -----------------------------------------------------------------
 // Build tasks
 // -----------------------------------------------------------------
-gulp.task('build.prod', ['compile:prod', 'copy:lib']);
-gulp.task('build.dev', ['tslint', 'compile:dev', 'copy:lib'])
+gulp.task('build.prod', function (done) {
+  runSequence('clean',
+    'compile:prod',
+    'copy:lib',
+    done);
+});
+
+gulp.task('build.dev', function (done) {
+  runSequence('clean',
+    'tslint',
+    'compile:dev',
+    'copy:lib',
+    done);
+});
+
 gulp.task('default', ['build.dev']);
