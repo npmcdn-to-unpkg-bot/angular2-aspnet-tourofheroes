@@ -10,7 +10,7 @@ module.exports = function (config) {
     browsers: ['Chrome'],
 
     // Reporters generates the coverage data
-    reporters: ['progress', 'dots', 'coverage'],
+    reporters: ['mocha', 'coverage'],
 
     // Do not include tests or libraries (these files will be instrumented by Istanbul)
     preprocessors: {
@@ -85,6 +85,6 @@ module.exports = function (config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-    singleRun: true
+    singleRun: false
   })
 };
